@@ -12,6 +12,7 @@
 		8C9E8F7A21408D9C0069A068 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C9E8F7821408D9C0069A068 /* Main.storyboard */; };
 		8C9E8F7C21408D9F0069A068 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C9E8F7B21408D9F0069A068 /* Assets.xcassets */; };
 		8C9E8F7F21408D9F0069A068 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C9E8F7D21408D9F0069A068 /* LaunchScreen.storyboard */; };
+		8C9E8F8721408DBE0069A068 /* UIImageView+ContentClippingRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C9E8F8621408DBE0069A068 /* UIImageView+ContentClippingRect.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		8C9E8F7B21408D9F0069A068 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8C9E8F7E21408D9F0069A068 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8C9E8F8021408D9F0069A068 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8C9E8F8621408DBE0069A068 /* UIImageView+ContentClippingRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+ContentClippingRect.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +57,7 @@
 			isa = PBXGroup;
 			children = (
 				8C9E8F7421408D9C0069A068 /* AppDelegate.swift */,
+				8C9E8F8621408DBE0069A068 /* UIImageView+ContentClippingRect.swift */,
 				8C9E8F7621408D9C0069A068 /* ViewController.swift */,
 				8C9E8F7821408D9C0069A068 /* Main.storyboard */,
 				8C9E8F7B21408D9F0069A068 /* Assets.xcassets */,
@@ -137,6 +140,7 @@
 			files = (
 				8C9E8F7721408D9C0069A068 /* ViewController.swift in Sources */,
 				8C9E8F7521408D9C0069A068 /* AppDelegate.swift in Sources */,
+				8C9E8F8721408DBE0069A068 /* UIImageView+ContentClippingRect.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
