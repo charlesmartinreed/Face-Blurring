@@ -23,6 +23,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         //add the button to our navigation bar to import photos from library
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Import", style: .plain, target: self, action: #selector(importPhoto))
+        
+        //add the share button to our navigation bar
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(sharePhoto))
     }
 
     override func didReceiveMemoryWarning() {
@@ -132,6 +135,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             vw.layer.borderWidth = 2
             imageView.addSubview(vw)
             
+            //adding our tap recognizer
+            let recognizer = UITapGestureRecognizer(target: self, action: #selector(faceTapped(_:)))
+            vw.addGestureRecognizer(recognizer)
+            
         }
 }
     
@@ -139,6 +146,95 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         //called when the orientation changes on the device
         
         addBlursRect()
+    }
+    
+    func renderBlurredFaces() {
+        
+        //we need to prepare the image
+        guard let currentUIImage = inputImage else { return }
+        
+        //requires a CGImage to use Core Image Filter, but we have to convert to a CGImage first for some reason
+        guard let currentCGImage = currentUIImage.cgImage else { return }
+        
+        //finally... a CIImage!
+        let currentCIImage = CIImage(cgImage: currentCGImage)
+        
+        //pixellate the image by first creating the filter
+        let filter = CIFilter(name: "CIPixellate")
+        
+        //use the CIImage as the input image
+        filter?.setValue(currentCIImage, forKey: kCIInputImageKey)
+        
+        //set the intensity of the filtering effect
+        filter?.setValue(12, forKey: kCIInputScaleKey)
+        
+        //get the filtered image, in full. It might be nil, so we handle this with a guard statement
+        guard let outputImage = filter?.outputImage else { return }
+        
+        //convert that filtered CIImage to a UIImage
+        let blurredImage = UIImage(ciImage: outputImage)
+        
+        //we'll use a clipping path for faces that should be blurred, which will mask the drawing to the specified path. This will be or blur.
+        
+        // prepare to render a new image at the full size we need
+        let render = UIGraphicsImageRenderer(size: currentUIImage.size)
+        
+        //commence rendering
+        let result = render.image { (ctx) in
+            
+            //draw the original image first
+            currentUIImage.draw(at: .zero)
+            
+            //create an empty clipping path that will hold our faces
+            let path = UIBezierPath()
+            
+            for face in detectedFaces {
+                if face.blur {
+                    //calculate the position of this face in image coordinations
+                    let boundingBox = face.observation.boundingBox
+                    let size = CGSize(width: boundingBox.width, height: boundingBox.height)
+                    let origin = CGPoint(x: boundingBox.minX * currentUIImage.size.width, y: 1 - (face.observation.boundingBox.minY) *
+                        currentUIImage.size.height - size.height)
+                    let rect = CGRect(origin: origin, size: size)
+                    
+                    //convert these coordinates into a path, and add it to the clipping path
+                    let miniPath = UIBezierPath(rect: rect)
+                    path.append(miniPath)
+                }
+            }
+            
+            if !path.isEmpty {
+                path.addClip()
+                blurredImage.draw(at: .zero)
+            }
+        }
+        
+        //show the blurred image
+        imageView.image = result
+        
+        
+    }
+    
+    //MARK:- Detect tapped faces
+    @objc func faceTapped(_ sender: UITapGestureRecognizer) {
+        
+        //check the view for the tag
+        guard let vw = sender.view else { return }
+        
+        //toggle the blurred state on and off, per tap
+        detectedFaces[vw.tag].blur = !detectedFaces[vw.tag].blur
+        renderBlurredFaces()
+        
+    }
+    
+    //MARK:- Media sharing function
+    @objc func sharePhoto() {
+        //if imageview has image, send to UIActivityViewController
+        guard let img = imageView else { return }
+        
+        let ac = UIActivityViewController(activityItems: [img], applicationActivities: nil)
+        
+        present(ac, animated: true, completion: nil)
     }
 
 }
